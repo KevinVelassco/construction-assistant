@@ -23,15 +23,16 @@ export class UserController {
     }
 
     static async create (req: Request, res: Response): Promise<Response> {
-        const {name, email} = req.body;
+        const {name, email, password} = req.body;
 
         const user = new User();
         user.name = name;
         user.email = email;
+        user.password = password;
 
         const errors = await validate(user);
 
-        if(errors.length > 0) return res.status(400) .json(errors);
+        if(errors.length > 0) return res.status(400).json(errors);
 
         const userRepository = getRepository(User);
 
@@ -46,6 +47,7 @@ export class UserController {
         }
 
         try{
+            user.hashPassword();
             const saved = await userRepository.save(user);
             return res.json(saved);
         } catch({e}){
