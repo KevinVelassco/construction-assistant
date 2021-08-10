@@ -4,6 +4,8 @@ import { validate } from "class-validator";
 
 import { User } from "../entities/user.entity";
 
+import { generateUuid } from "../utils/generateUuid";
+
 export class UserController {
 
     static async getAll (req: Request, res: Response): Promise<Response> {
@@ -17,7 +19,7 @@ export class UserController {
         const  userRepository = getRepository(User);
         const item = await userRepository.findOne(id);
 
-        if(!item) return res.status(404).json({message: `user with id ${id} does not exist`});
+        if(!item) return res.status(404).json({success: false, message: `user with id ${id} does not exist`});
 
         return res.json(item);
     }
@@ -29,8 +31,11 @@ export class UserController {
         user.name = name;
         user.email = email;
         user.password = password;
+        user.authUid = generateUuid(21);
 
-        const errors = await validate(user);
+        const errors = await validate(user, {
+            validationError : { target: false, value: false }
+        });
 
         if(errors.length > 0) return res.status(400).json(errors);
 
@@ -43,15 +48,16 @@ export class UserController {
         });
 
         if(existing) {
-            return res.status(412).json({message: `already exists a user with email ${email}`})
+            return res.status(412).json({success: false, message: `already exists a user with email ${email}`})
         }
 
         try{
             user.hashPassword();
+
             const saved = await userRepository.save(user);
             return res.json(saved);
-        } catch({e}){
-            return res.status(409).json({message: e.message});
+        } catch(e){
+            return res.status(409).json({success: false, message: e.message});
         }
     }
 
@@ -60,16 +66,18 @@ export class UserController {
         const  userRepository = getRepository(User);
         const user = await userRepository.findOne(id);
 
-        if(!user) return res.status(404).json({message: `user with id ${id} does not exist`});
+        if(!user) return res.status(404).json({success: false, message: `user with id ${id} does not exist`});
 
         const {name, email} = req.body;
 
         user.name = name ?? user.name;
         user.email = email ?? user.email;
 
-        const errors = await validate(user);
+        const errors = await validate(user, {
+            validationError : { target: false, value: false }
+        });
 
-        if(errors.length > 0) return res.status(400) .json(errors);
+        if(errors.length > 0) return res.status(400).json(errors);
 
         const existing = await userRepository.findOne({
             where:{
@@ -78,14 +86,14 @@ export class UserController {
         });
 
         if(existing) {
-            return res.status(412).json({message: `already exists a user with email ${email}`})
+            return res.status(412).json({success: false, message: `already exists a user with email ${email}`})
         }
 
         try{
             const saved = await userRepository.save(user);
             return res.json(saved);
-        } catch({e}){
-            return res.status(409).json({message: e.message});
+        } catch(e){
+            return res.status(409).json({success: false, message: e.message});
         }
     }
 
@@ -94,7 +102,7 @@ export class UserController {
         const  userRepository = getRepository(User);
         const user = await userRepository.findOne(id);
 
-        if(!user) return res.status(404).json({message: `user with id ${id} does not exist`});
+        if(!user) return res.status(404).json({success: false, message: `user with id ${id} does not exist`});
 
         const clone = {...user};
 

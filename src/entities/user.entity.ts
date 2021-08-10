@@ -1,9 +1,10 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { IsEmail, IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 import bcrypt from 'bcrypt';
 
 @Entity('users')
+@Unique('uq_auth_uid', ['authUid'])
 @Unique('uq_email', ['email'])
 export class User {
     @PrimaryGeneratedColumn()
@@ -26,6 +27,10 @@ export class User {
     @IsNotEmpty()
     @IsString()
     password: string;
+
+    @Index('idx_auth_uid')
+    @Column({ name: 'auth_uid', type: 'varchar', length: 100 })
+    authUid: string;
 
     @CreateDateColumn()
     createdAt: Date;
