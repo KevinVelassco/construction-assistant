@@ -6,6 +6,7 @@ import  cors from "cors";
 import dotenv from 'dotenv';
 
 import routes from "./routes/index.routes";
+import { errorHandling } from "./middlewares/error-handling";
 
 const enviroment = process.env.NODE_ENV || 'local';
 const envPath = path.resolve(__dirname, `../.env.${enviroment}`);
@@ -29,12 +30,15 @@ createConnection({
     // create express app
     const app = express();
 
-    //Middlewares
+    // middlewares
     app.use(cors());
     app.use(express.json());
 
-    //routes
+    // routes
     app.use('/', routes);
+
+    // middleware errors
+    app.use(errorHandling);
 
     // start express server
     app.listen(PORT, () => console.log(`server running on port ${PORT}`));

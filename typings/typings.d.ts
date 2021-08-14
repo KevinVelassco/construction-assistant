@@ -1,7 +1,7 @@
 import { User } from "../src/entities/user.entity";
 
 declare global {
-    declare namespace Express {
+    namespace Express {
         interface Request {
             user?: User
         }
