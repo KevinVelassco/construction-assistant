@@ -4,6 +4,8 @@ import { validate } from "class-validator";
 
 import { User } from "../entities/user.entity";
 
+import { UserService } from "../services/user.service";
+
 import { generateUuid } from "../utils/generateUuid";
 
 export class UserController {
@@ -98,16 +100,8 @@ export class UserController {
     }
 
     static async remove (req: Request, res: Response): Promise<Response> {
-        const {id} = req.params;
-        const  userRepository = getRepository(User);
-        const user = await userRepository.findOne(id);
-
-        if(!user) return res.status(404).json({success: false, message: `user with id ${id} does not exist`});
-
-        const clone = {...user};
-
-        await userRepository.remove(user);
-
-        return res.json(clone);
+        const {authUid} = req.params;
+        const user = await UserService.remove({authUid});
+        return res.json(user);
     }
 }

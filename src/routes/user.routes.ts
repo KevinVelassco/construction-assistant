@@ -1,6 +1,10 @@
 import { Router } from "express";
+import { DtoType } from "../config/keys.config";
 import { UserController } from "../controllers/user.controller";
+import { GetUserByAuthUidInput } from "../dto/users/get-user-by-auth-uid-input.dto";
+import { dtoValidation } from "../middlewares/dto-validation";
 import { checkJwt } from "../middlewares/jwt";
+import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
@@ -8,6 +12,8 @@ router.get('/', checkJwt, UserController.getAll);
 router.get('/:id', checkJwt, UserController.getById);
 router.post('/', checkJwt, UserController.create);
 router.put('/:id', checkJwt, UserController.update);
-router.delete('/:id', checkJwt, UserController.remove);
+router.delete('/:authUid',
+    [checkJwt, dtoValidation(GetUserByAuthUidInput, DtoType.Params)],
+    asyncHandler(UserController.remove));
 
 export default router;
