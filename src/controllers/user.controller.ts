@@ -16,13 +16,9 @@ export class UserController {
         return res.json(items);
     }
 
-    static async getById (req: Request, res: Response): Promise<Response> {
-        const {id} = req.params;
-        const  userRepository = getRepository(User);
-        const item = await userRepository.findOne(id);
-
-        if(!item) return res.status(404).json({success: false, message: `user with id ${id} does not exist`});
-
+    static async getByAuthUid (req: Request, res: Response): Promise<Response> {
+        const {authUid} = req.params;
+        const item = await UserService.getUserByAuthUid({authUid});
         return res.json(item);
     }
 

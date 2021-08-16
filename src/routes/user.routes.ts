@@ -9,7 +9,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 const router = Router();
 
 router.get('/', checkJwt, UserController.getAll);
-router.get('/:id', checkJwt, UserController.getById);
+router.get('/:authUid', checkJwt, UserController.getByAuthUid);
 router.post('/', checkJwt, UserController.create);
 router.put('/:id', checkJwt, UserController.update);
 router.delete('/:authUid',
