@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from "typeorm";
-
-import { User } from "../entities/user.entity";
+import { UserService } from "../services/user.service";
 
 export const checkJwt = async (req: Request, res: Response, next: NextFunction) => {
     const authorization = <string>req.headers['authorization'];
@@ -36,13 +34,7 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
         return res.status(401).json({success: false, message: 'invalid token' });
     }
 
-    const userRepository = getRepository(User);
-
-    const user = await userRepository.findOne({
-        where : {
-            authUid
-        }
-    });
+    const user = await UserService.getUserByAuthUid({authUid});
 
     if(!user) {
         return res.status(401).json({success: false, message: 'user does not exist' });
