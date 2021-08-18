@@ -14,7 +14,9 @@ router.get('/',
     [checkJwt, dtoValidation(GetAllUsersInput, DtoType.Query)],
     asyncHandler(UserController.getAll));
 
-router.get('/:authUid', checkJwt, UserController.getByAuthUid);
+router.get('/:authUid',
+    [checkJwt, dtoValidation(GetUserByAuthUidInput, DtoType.Params)],
+    UserController.getByAuthUid);
 
 router.post('/',
     [checkJwt, dtoValidation(CreateUserInput, DtoType.Body)],
