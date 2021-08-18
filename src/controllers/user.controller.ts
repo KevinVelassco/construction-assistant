@@ -22,40 +22,8 @@ export class UserController {
     }
 
     static async create (req: Request, res: Response): Promise<Response> {
-        const {name, email, password} = req.body;
-
-        const user = new User();
-        user.name = name;
-        user.email = email;
-        user.password = password;
-        user.authUid = generateUuid(21);
-
-        const errors = await validate(user, {
-            validationError : { target: false, value: false }
-        });
-
-        if(errors.length > 0) return res.status(400).json(errors);
-
-        const userRepository = getRepository(User);
-
-        const existing = await userRepository.findOne({
-            where:{
-                email
-            }
-        });
-
-        if(existing) {
-            return res.status(412).json({success: false, message: `already exists a user with email ${email}`})
-        }
-
-        try{
-            user.hashPassword();
-
-            const saved = await userRepository.save(user);
-            return res.json(saved);
-        } catch(e){
-            return res.status(409).json({success: false, message: e.message});
-        }
+        const user = await UserService.create(req.body);
+        return res.json(user);
     }
 
     static async update (req: Request, res: Response): Promise<Response> {

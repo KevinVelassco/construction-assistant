@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 import bcrypt from 'bcrypt';
 
@@ -11,21 +10,12 @@ export class User {
     id: number;
 
     @Column({type: 'varchar', length: 100})
-    @IsNotEmpty()
-    @IsString()
-    @MaxLength(100)
     name: string;
 
     @Column({type: 'varchar', length: 50})
-    @IsNotEmpty()
-    @IsString()
-    @IsEmail()
-    @MaxLength(50)
     email: string;
 
     @Column({type: 'varchar', length: 100})
-    @IsNotEmpty()
-    @IsString()
     password: string;
 
     @Index('idx_auth_uid')

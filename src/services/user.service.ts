@@ -1,8 +1,10 @@
 import { getRepository } from "typeorm";
 import { HttpException } from "../common/http-exception";
+import { CreateUserInput } from "../dto/users/create-user-input.dto";
 import { GetAllUsersInput } from "../dto/users/get-all-users-input.dto";
 import { GetUserByAuthUidInput } from "../dto/users/get-user-by-auth-uid-input.dto";
 import { User } from "../entities/user.entity";
+import { generateUuid } from "../utils/generateUuid";
 
 export class UserService {
 
@@ -11,7 +13,8 @@ export class UserService {
 
         const { limit, skip, search} = getAllUsersInput;
 
-        const query = userRepository.createQueryBuilder('u');
+        const query = userRepository.createQueryBuilder('u')
+            .select(["u.id", "u.authUid", "u.name", "u.email"]);
 
         if(search){
             query.where('u.name ilike :search', {search: `%${search}%`})
@@ -33,12 +36,43 @@ export class UserService {
         const {authUid} = getUserByAuthUidInput;
 
         const user = await userRepository.findOne({
+            select: ["id", "authUid", "name", "email"],
             where: {
                 authUid
             }
         });
 
         return user || null;
+    }
+
+    static async create (createUserInput: CreateUserInput): Promise<User> {
+        const userRepository = getRepository(User);
+
+        const { email } = createUserInput;
+
+        const existing = await userRepository.findOne({
+            where:{
+                email
+            }
+        });
+
+        if(existing) {
+            throw new HttpException(412, `already exists a user with email ${email}`);
+        }
+
+        const created = userRepository.create({
+            ...createUserInput,
+            authUid: generateUuid(21)
+        });
+
+        try {
+            created.hashPassword();
+
+            const saved = await userRepository.save(created);
+            return saved;
+        } catch(e){
+            throw new HttpException(409, e.message);
+        }
     }
 
     static async remove (getUserByAuthUidInput : GetUserByAuthUidInput): Promise<User> {

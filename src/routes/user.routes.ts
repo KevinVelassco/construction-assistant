@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { DtoType } from "../config/keys.config";
 import { UserController } from "../controllers/user.controller";
+import { CreateUserInput } from "../dto/users/create-user-input.dto";
 import { GetAllUsersInput } from "../dto/users/get-all-users-input.dto";
 import { GetUserByAuthUidInput } from "../dto/users/get-user-by-auth-uid-input.dto";
 import { dtoValidation } from "../middlewares/dto-validation";
@@ -12,9 +13,15 @@ const router = Router();
 router.get('/',
     [checkJwt, dtoValidation(GetAllUsersInput, DtoType.Query)],
     asyncHandler(UserController.getAll));
+
 router.get('/:authUid', checkJwt, UserController.getByAuthUid);
-router.post('/', checkJwt, UserController.create);
+
+router.post('/',
+    [checkJwt, dtoValidation(CreateUserInput, DtoType.Body)],
+    asyncHandler(UserController.create));
+
 router.put('/:id', checkJwt, UserController.update);
+
 router.delete('/:authUid',
     [checkJwt, dtoValidation(GetUserByAuthUidInput, DtoType.Params)],
     asyncHandler(UserController.remove));
