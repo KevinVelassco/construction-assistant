@@ -11,8 +11,7 @@ import { generateUuid } from "../utils/generateUuid";
 export class UserController {
 
     static async getAll (req: Request, res: Response): Promise<Response> {
-        const  userRepository = getRepository(User);
-        const items = await userRepository.find();
+        const items = await UserService.getAll(req.query);
         return res.json(items);
     }
 
