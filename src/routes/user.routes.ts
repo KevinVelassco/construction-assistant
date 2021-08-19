@@ -4,6 +4,7 @@ import { UserController } from "../controllers/user.controller";
 import { CreateUserInput } from "../dto/users/create-user-input.dto";
 import { GetAllUsersInput } from "../dto/users/get-all-users-input.dto";
 import { GetUserByAuthUidInput } from "../dto/users/get-user-by-auth-uid-input.dto";
+import { UpdateUserInput } from "../dto/users/update-user-input.dto";
 import { dtoValidation } from "../middlewares/dto-validation";
 import { checkJwt } from "../middlewares/jwt";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -22,7 +23,13 @@ router.post('/',
     [checkJwt, dtoValidation(CreateUserInput, DtoType.Body)],
     asyncHandler(UserController.create));
 
-router.put('/:id', checkJwt, UserController.update);
+router.put('/:authUid',
+    [
+        checkJwt,
+        dtoValidation(GetUserByAuthUidInput, DtoType.Params),
+        dtoValidation(UpdateUserInput, DtoType.Body)
+    ],
+    asyncHandler(UserController.update));
 
 router.delete('/:authUid',
     [checkJwt, dtoValidation(GetUserByAuthUidInput, DtoType.Params)],

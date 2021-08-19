@@ -3,6 +3,7 @@ import { HttpException } from "../common/http-exception";
 import { CreateUserInput } from "../dto/users/create-user-input.dto";
 import { GetAllUsersInput } from "../dto/users/get-all-users-input.dto";
 import { GetUserByAuthUidInput } from "../dto/users/get-user-by-auth-uid-input.dto";
+import { UpdateUserInput } from "../dto/users/update-user-input.dto";
 import { User } from "../entities/user.entity";
 import { generateUuid } from "../utils/generateUuid";
 
@@ -69,6 +70,37 @@ export class UserService {
             created.hashPassword();
 
             const saved = await userRepository.save(created);
+            return saved;
+        } catch(e){
+            throw new HttpException(409, e.message);
+        }
+    }
+
+    static async update (getUserByAuthUidInput : GetUserByAuthUidInput, updateUserInput: UpdateUserInput): Promise<User> {
+        const  userRepository = getRepository(User);
+
+        const {authUid} = getUserByAuthUidInput;
+
+        const user = await this.getUserByAuthUid({authUid});
+
+        if(!user) throw new HttpException(404, `user with authUid ${authUid} does not exist`);
+
+        const {email} = updateUserInput;
+
+        const existing = await userRepository.findOne({
+            where:{
+                email
+            }
+        });
+
+        if(existing) {
+            throw new HttpException(412, `already exists a user with email ${email}`);
+        }
+
+        const merged = userRepository.merge(user, updateUserInput);
+
+        try{
+            const saved = await userRepository.save(merged);
             return saved;
         } catch(e){
             throw new HttpException(409, e.message);
