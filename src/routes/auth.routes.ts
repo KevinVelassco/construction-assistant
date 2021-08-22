@@ -1,8 +1,14 @@
-import { Router } from "express";
+import { DtoType } from "../config/keys.config";
 import AuthController from "../controllers/auth.controller";
+import { LoginAuthInput } from "../dto/auths/login-auth-input.dto";
+import { dtoValidation } from "../middlewares/dto-validation";
 
-const router = Router();
-
-router.post('/login', AuthController.login);
-
-export default router;
+export const auth = [
+    {
+        unauthenticatedAvailable: true,
+        method: 'post',
+        route: '/auth/login',
+        dto: dtoValidation(LoginAuthInput, DtoType.Body),
+        action: AuthController.login
+    }
+];

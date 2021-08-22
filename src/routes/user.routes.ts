@@ -1,4 +1,3 @@
-import { Router } from "express";
 import { DtoType } from "../config/keys.config";
 import { UserController } from "../controllers/user.controller";
 import { CreateUserInput } from "../dto/users/create-user-input.dto";
@@ -6,33 +5,39 @@ import { GetAllUsersInput } from "../dto/users/get-all-users-input.dto";
 import { GetUserByAuthUidInput } from "../dto/users/get-user-by-auth-uid-input.dto";
 import { UpdateUserInput } from "../dto/users/update-user-input.dto";
 import { dtoValidation } from "../middlewares/dto-validation";
-import { checkJwt } from "../middlewares/jwt";
-import { asyncHandler } from "../utils/asyncHandler";
 
-const router = Router();
-
-router.get('/',
-    [checkJwt, dtoValidation(GetAllUsersInput, DtoType.Query)],
-    asyncHandler(UserController.getAll));
-
-router.get('/:authUid',
-    [checkJwt, dtoValidation(GetUserByAuthUidInput, DtoType.Params)],
-    UserController.getByAuthUid);
-
-router.post('/',
-    [checkJwt, dtoValidation(CreateUserInput, DtoType.Body)],
-    asyncHandler(UserController.create));
-
-router.put('/:authUid',
-    [
-        checkJwt,
-        dtoValidation(GetUserByAuthUidInput, DtoType.Params),
-        dtoValidation(UpdateUserInput, DtoType.Body)
-    ],
-    asyncHandler(UserController.update));
-
-router.delete('/:authUid',
-    [checkJwt, dtoValidation(GetUserByAuthUidInput, DtoType.Params)],
-    asyncHandler(UserController.remove));
-
-export default router;
+export const user = [
+    {
+        method: 'get',
+        route: '/users',
+        dto: dtoValidation(GetAllUsersInput, DtoType.Query),
+        action: UserController.getAll
+    },
+    {
+        method: 'get',
+        route: '/users/:authUid',
+        dto: dtoValidation(GetUserByAuthUidInput, DtoType.Params),
+        action: UserController.getByAuthUid
+    },
+    {
+        method: 'post',
+        route: '/users',
+        dto: dtoValidation(CreateUserInput, DtoType.Body),
+        action: UserController.create
+    },
+    {
+        method: 'put',
+        route: '/users/:authUid',
+        dto: [
+            dtoValidation(GetUserByAuthUidInput, DtoType.Params),
+            dtoValidation(UpdateUserInput, DtoType.Body)
+        ],
+        action: UserController.update
+    },
+    {
+        method: 'delete',
+        route: '/users/:authUid',
+        dto: dtoValidation(GetUserByAuthUidInput, DtoType.Params),
+        action: UserController.remove
+    }
+];
