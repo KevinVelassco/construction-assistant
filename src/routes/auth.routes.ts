@@ -1,5 +1,5 @@
 import { DtoType } from "../config/keys.config";
-import AuthController from "../controllers/auth.controller";
+import { AuthController } from "../controllers/auth.controller";
 import { LoginAuthInput } from "../dto/auths/login-auth-input.dto";
 import { dtoValidation } from "../middlewares/dto-validation";
 
