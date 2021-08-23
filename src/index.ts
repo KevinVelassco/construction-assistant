@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 
 import routes from "./routes/index.routes";
 import { errorHandling } from "./middlewares/error-handling";
+import { notfound404 } from "./middlewares/not-found-404";
 
 const enviroment = process.env.NODE_ENV || 'local';
 const envPath = path.resolve(__dirname, `../.env.${enviroment}`);
@@ -36,6 +37,9 @@ createConnection({
 
     // routes
     app.use('/api', routes);
+
+    //middleware 404
+    app.use(notfound404);
 
     // middleware errors
     app.use(errorHandling);
