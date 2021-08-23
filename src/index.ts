@@ -35,7 +35,7 @@ createConnection({
     app.use(express.json());
 
     // routes
-    app.use('/', routes);
+    app.use('/api', routes);
 
     // middleware errors
     app.use(errorHandling);
