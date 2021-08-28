@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn
+} from 'typeorm';
 
 import bcrypt from 'bcrypt';
 
@@ -6,34 +14,34 @@ import bcrypt from 'bcrypt';
 @Unique('uq_auth_uid', ['authUid'])
 @Unique('uq_email', ['email'])
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({type: 'varchar', length: 100})
-    name: string;
+  @Column({ type: 'varchar', length: 100 })
+  name: string;
 
-    @Column({type: 'varchar', length: 50})
-    email: string;
+  @Column({ type: 'varchar', length: 50 })
+  email: string;
 
-    @Column({type: 'varchar', length: 100})
-    password: string;
+  @Column({ type: 'varchar', length: 100 })
+  password: string;
 
-    @Index('idx_auth_uid')
-    @Column({ name: 'auth_uid', type: 'varchar', length: 100 })
-    authUid: string;
+  @Index('idx_auth_uid')
+  @Column({ name: 'auth_uid', type: 'varchar', length: 100 })
+  authUid: string;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    hashPassword(): void {
-        const salt = bcrypt.genSaltSync(10);
-        this.password = bcrypt.hashSync(this.password, salt);
-    }
+  hashPassword(): void {
+    const salt = bcrypt.genSaltSync(10);
+    this.password = bcrypt.hashSync(this.password, salt);
+  }
 
-    checkPassword(password: string): boolean {
-        return bcrypt.compareSync(password, this.password);
-    }
+  checkPassword(password: string): boolean {
+    return bcrypt.compareSync(password, this.password);
+  }
 }
