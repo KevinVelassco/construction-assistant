@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
-import { DtoType } from '../config/keys.config';
+import { DtoType } from '../config/dto-type.config';
 
 export const dtoValidation = (dto: any, dtoType: DtoType) => {
   return async (req: Request, res: Response, next: NextFunction) => {

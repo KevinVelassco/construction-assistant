@@ -1,4 +1,4 @@
-import { DtoType } from '../config/keys.config';
+import { DtoType } from '../config/dto-type.config';
 import { UserController } from '../controllers/user.controller';
 import { CreateUserInput } from '../dto/users/create-user-input.dto';
 import { GetAllUsersInput } from '../dto/users/get-all-users-input.dto';
