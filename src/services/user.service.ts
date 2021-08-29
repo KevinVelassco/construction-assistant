@@ -41,7 +41,6 @@ export class UserService {
     const { authUid } = getUserByAuthUidInput;
 
     const user = await userRepository.findOne({
-      select: ['id', 'authUid', 'name', 'email'],
       where: {
         authUid
       }
