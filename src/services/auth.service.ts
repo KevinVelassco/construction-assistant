@@ -14,13 +14,7 @@ export class AuthService {
       throw new HttpException(400, 'email and password are required.');
     }
 
-    const userRepository = getRepository(User);
-
-    const user = await userRepository.findOne({
-      where: {
-        email
-      }
-    });
+    const user = await UserService.getUserByEmail({ email });
 
     if (!(user && user.checkPassword(password))) {
       throw new HttpException(400, 'email or password are incorrect.');
