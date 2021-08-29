@@ -7,6 +7,7 @@ import { GetUserByAuthUidInput } from '../dto/users/get-user-by-auth-uid-input.d
 import { UpdateUserInput } from '../dto/users/update-user-input.dto';
 import { User } from '../entities/user.entity';
 import { generateUuid } from '../utils/generateUuid';
+import { GetUserByEmailInput } from '../dto/users/get-user-by-email-input.dto';
 
 export class UserService {
   static async findAll(findAllUsersInput: FindAllUsersInput): Promise<User[]> {
@@ -149,6 +150,22 @@ export class UserService {
     const user = await userRepository.findOne({
       where: {
         authUid
+      }
+    });
+
+    return user || null;
+  }
+
+  static async getUserByEmail(
+    getUserByEmailInput: GetUserByEmailInput
+  ): Promise<User | null> {
+    const userRepository = getRepository(User);
+
+    const { email } = getUserByEmailInput;
+
+    const user = await userRepository.findOne({
+      where: {
+        email
       }
     });
 
