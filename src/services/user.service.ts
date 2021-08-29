@@ -2,17 +2,17 @@ import { getRepository } from 'typeorm';
 import { HttpException } from '../common/http-exception';
 import { CreateUserInput } from '../dto/users/create-user-input.dto';
 import { FindOneUserInput } from '../dto/users/find-one-user-input.dto';
-import { GetAllUsersInput } from '../dto/users/get-all-users-input.dto';
+import { FindAllUsersInput } from '../dto/users/find-all-users-input.dto';
 import { GetUserByAuthUidInput } from '../dto/users/get-user-by-auth-uid-input.dto';
 import { UpdateUserInput } from '../dto/users/update-user-input.dto';
 import { User } from '../entities/user.entity';
 import { generateUuid } from '../utils/generateUuid';
 
 export class UserService {
-  static async getAll(getAllUsersInput: GetAllUsersInput): Promise<User[]> {
+  static async findAll(findAllUsersInput: FindAllUsersInput): Promise<User[]> {
     const userRepository = getRepository(User);
 
-    const { limit, skip, search } = getAllUsersInput;
+    const { limit, skip, search } = findAllUsersInput;
 
     const query = userRepository
       .createQueryBuilder('u')

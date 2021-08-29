@@ -4,8 +4,8 @@ import { User } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
 
 export class UserController {
-  static async getAll(req: Request): Promise<User[]> {
-    return UserService.getAll(req.query);
+  static async findAll(req: Request): Promise<User[]> {
+    return UserService.findAll(req.query);
   }
 
   static async findOne(req: Request): Promise<User | null> {
