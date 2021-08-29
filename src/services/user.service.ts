@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { HttpException } from '../common/http-exception';
 import { CreateUserInput } from '../dto/users/create-user-input.dto';
+import { FindOneUserInput } from '../dto/users/find-one-user-input.dto';
 import { GetAllUsersInput } from '../dto/users/get-all-users-input.dto';
 import { GetUserByAuthUidInput } from '../dto/users/get-user-by-auth-uid-input.dto';
 import { UpdateUserInput } from '../dto/users/update-user-input.dto';
@@ -33,14 +34,15 @@ export class UserService {
     return items;
   }
 
-  static async getUserByAuthUid(
-    getUserByAuthUidInput: GetUserByAuthUidInput
+  static async findOne(
+    findOneUserInput: FindOneUserInput
   ): Promise<User | null> {
     const userRepository = getRepository(User);
 
-    const { authUid } = getUserByAuthUidInput;
+    const { authUid } = findOneUserInput;
 
     const user = await userRepository.findOne({
+      select: ['id', 'authUid', 'name', 'email'],
       where: {
         authUid
       }
@@ -135,5 +137,21 @@ export class UserService {
     await userRepository.remove(user);
 
     return user;
+  }
+
+  static async getUserByAuthUid(
+    getUserByAuthUidInput: GetUserByAuthUidInput
+  ): Promise<User | null> {
+    const userRepository = getRepository(User);
+
+    const { authUid } = getUserByAuthUidInput;
+
+    const user = await userRepository.findOne({
+      where: {
+        authUid
+      }
+    });
+
+    return user || null;
   }
 }

@@ -1,6 +1,7 @@
 import { DtoType } from '../config/dto-type.config';
 import { UserController } from '../controllers/user.controller';
 import { CreateUserInput } from '../dto/users/create-user-input.dto';
+import { FindOneUserInput } from '../dto/users/find-one-user-input.dto';
 import { GetAllUsersInput } from '../dto/users/get-all-users-input.dto';
 import { GetUserByAuthUidInput } from '../dto/users/get-user-by-auth-uid-input.dto';
 import { UpdateUserInput } from '../dto/users/update-user-input.dto';
@@ -16,8 +17,8 @@ export const user = [
   {
     method: 'get',
     route: '/users/:authUid',
-    dto: dtoValidation(GetUserByAuthUidInput, DtoType.Params),
-    action: UserController.getByAuthUid
+    dto: dtoValidation(FindOneUserInput, DtoType.Params),
+    action: UserController.findOne
   },
   {
     method: 'post',

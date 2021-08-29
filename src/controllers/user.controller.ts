@@ -8,9 +8,9 @@ export class UserController {
     return UserService.getAll(req.query);
   }
 
-  static async getByAuthUid(req: Request): Promise<User | null> {
+  static async findOne(req: Request): Promise<User | null> {
     const { authUid } = req.params;
-    return UserService.getUserByAuthUid({ authUid });
+    return UserService.findOne({ authUid });
   }
 
   static async create(req: Request): Promise<User> {
