@@ -1,8 +1,8 @@
 import { getRepository } from 'typeorm';
+import * as jwt from 'jsonwebtoken';
 import { HttpException } from '../common/http-exception';
 import { LoginAuthInput } from '../dto/auths/login-auth-input.dto';
 import { User } from '../entities/user.entity';
-import * as jwt from 'jsonwebtoken';
 import { ChangeAuthPasswordInput } from '../dto/auths/change-auth-password-input.dto';
 import { UserService } from './user.service';
 
