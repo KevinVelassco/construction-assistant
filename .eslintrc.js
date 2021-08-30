@@ -26,7 +26,20 @@ module.exports = {
     indent: ['error', 2],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
-    'comma-dangle': ['error', 'never']
+    'comma-dangle': ['error', 'never'],
     // 'no-console': ['error', { allow: ['warn', 'error'] }]
+    'import/order': [
+      'error',
+      {
+        groups: [
+          'builtin', // node "builtin" modules
+          'external', // "external" modules
+          'internal', // "internal" modules
+          ['sibling', 'parent'], // Then sibling and parent types. They can be mingled together
+          'index', // Then the index file
+          'object' // Then the rest: internal and external type
+        ]
+      }
+    ]
   }
 };
