@@ -33,7 +33,7 @@ export const checkJwt = async (
   let decodedToken: any;
 
   try {
-    decodedToken = jwt.verify(token, process.env.TOKEN_SECRET || 'qwe');
+    decodedToken = jwt.verify(token, <string>process.env.ACCESS_TOKEN_SECRET);
   } catch (e) {
     return res.status(401).json({ success: false, message: 'invalid token' });
   }

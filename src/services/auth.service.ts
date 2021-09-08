@@ -5,6 +5,7 @@ import { LoginAuthInput } from '../dto/auths/login-auth-input.dto';
 import { User } from '../entities/user.entity';
 import { ChangeAuthPasswordInput } from '../dto/auths/change-auth-password-input.dto';
 import { UserService } from './user.service';
+import { RefreshAuthTokenInput } from '../dto/auths/refresh-auth-token-input.dto';
 
 export class AuthService {
   static async login(loginAuthInput: LoginAuthInput): Promise<Object> {
@@ -20,16 +21,58 @@ export class AuthService {
       throw new HttpException(400, 'email or password are incorrect.');
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { authUid: user.authUid },
-      process.env.TOKEN_SECRET || 'qwe',
-      { expiresIn: '1h' }
+      <string>process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION }
+    );
+
+    const refreshToken = jwt.sign(
+      { authUid: user.authUid },
+      <string>process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION }
     );
 
     return {
       success: true,
-      token
+      accessToken,
+      refreshToken
     };
+  }
+
+  static async refreshToken(
+    refreshAuthTokenInput: RefreshAuthTokenInput
+  ): Promise<Object> {
+    const { refreshToken } = refreshAuthTokenInput;
+
+    let decodedToken: any;
+
+    try {
+      decodedToken = jwt.verify(
+        refreshToken,
+        <string>process.env.REFRESH_TOKEN_SECRET
+      );
+    } catch (e) {
+      throw new HttpException(400, 'invalid token.');
+    }
+
+    const existing = await UserService.getUserByAuthUid({
+      authUid: decodedToken.authUid
+    });
+
+    if (!existing)
+      throw new HttpException(
+        404,
+        `can't get the user with authUid ${decodedToken.authUid}`
+      );
+
+    const accessToken = jwt.sign(
+      { authUid: existing.authUid },
+      <string>process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION }
+    );
+
+    return { success: true, accessToken: accessToken };
   }
 
   static async changePassword(
