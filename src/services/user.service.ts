@@ -8,6 +8,7 @@ import { UpdateUserInput } from '../dto/users/update-user-input.dto';
 import { User } from '../entities/user.entity';
 import { generateUuid } from '../utils/generateUuid';
 import { GetUserByEmailInput } from '../dto/users/get-user-by-email-input.dto';
+import { GetUserByAuthUidAndEmailInput } from '../dto/users/get-user-by-auth-uid-and-email-input.dto';
 
 export class UserService {
   static async findAll(findAllUsersInput: FindAllUsersInput): Promise<User[]> {
@@ -165,6 +166,23 @@ export class UserService {
 
     const user = await userRepository.findOne({
       where: {
+        email
+      }
+    });
+
+    return user || null;
+  }
+
+  static async getUserByAuthUidAndEmail(
+    getUserByAuthUidAndEmailInput: GetUserByAuthUidAndEmailInput
+  ): Promise<User | null> {
+    const userRepository = getRepository(User);
+
+    const { authUid, email } = getUserByAuthUidAndEmailInput;
+
+    const user = await userRepository.findOne({
+      where: {
+        authUid,
         email
       }
     });
