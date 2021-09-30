@@ -3,12 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn
 } from 'typeorm';
 
 import bcrypt from 'bcrypt';
+import { VerificationCode } from './verification-codo.entity';
 
 @Entity('users')
 @Unique('uq_auth_uid', ['authUid'])
@@ -44,4 +46,12 @@ export class User {
   checkPassword(password: string): boolean {
     return bcrypt.compareSync(password, this.password);
   }
+
+  // ralations
+
+  @OneToMany(
+    () => VerificationCode,
+    (verificationCode: VerificationCode) => verificationCode.user
+  )
+  verificationCodes: VerificationCode[];
 }
