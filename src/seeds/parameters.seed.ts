@@ -7,14 +7,17 @@ export const ParameterFactory = {
       // Email parameters
       {
         name: 'UPDATED_PASSWORD_EMAIL_SUBJECT',
-        value: 'Construction Assistant account password changed'
+        value: 'Construction Assistant account password changed',
+        description:
+          'subject of the email confirming the account password change'
       }
     ];
 
     return items.map(item =>
       connection.getRepository(Parameter).create({
         name: item.name,
-        value: item.value
+        value: item.value,
+        description: item.description
       })
     );
   },
@@ -34,7 +37,8 @@ export const ParameterFactory = {
       if (existing) {
         itemToSave = await connection.getRepository(Parameter).preload({
           id: existing.id,
-          value: item.value
+          value: item.value,
+          description: item.description
         });
       } else itemToSave = item;
 
