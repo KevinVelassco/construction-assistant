@@ -27,6 +27,9 @@ export class Parameter {
   @Column({ type: 'varchar', length: 200 })
   value: string;
 
+  @Column({ type: 'varchar', length: 300 })
+  description: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
