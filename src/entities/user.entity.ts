@@ -32,10 +32,10 @@ export class User {
   @Column({ name: 'auth_uid', type: 'varchar', length: 100 })
   authUid: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   hashPassword(): void {
