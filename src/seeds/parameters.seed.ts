@@ -7,9 +7,14 @@ export const ParameterFactory = {
       // Email parameters
       {
         name: 'UPDATED_PASSWORD_EMAIL_SUBJECT',
-        value: 'Construction Assistant account password changed',
+        value: 'Construction Assistant - Account password changed',
         description:
-          'subject of the email confirming the account password change'
+          'Subject of the email confirming the account password change'
+      },
+      {
+        name: 'PASSWORD_RESET_EMAIL_SUBJECT',
+        value: 'Construction Assistant - Password Reset Instructions',
+        description: 'Email subject for password reset instructions'
       }
     ];
 
