@@ -52,7 +52,9 @@ export class VerificationCode {
 
   // ralations
 
-  @ManyToOne(() => User, (user: User) => user.verificationCodes)
+  @ManyToOne(() => User, (user: User) => user.verificationCodes, {
+    nullable: false
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 }
