@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 import bcrypt from 'bcrypt';
-import { VerificationCode } from './verification-codo.entity';
+import { VerificationCode } from './verification-code.entity';
 
 @Entity('users')
 @Unique('uq_auth_uid', ['authUid'])
