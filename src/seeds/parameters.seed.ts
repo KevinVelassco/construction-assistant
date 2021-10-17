@@ -15,6 +15,11 @@ export const ParameterFactory = {
         name: 'PASSWORD_RESET_EMAIL_SUBJECT',
         value: 'Construction Assistant - Password Reset Instructions',
         description: 'Email subject for password reset instructions'
+      },
+      {
+        name: 'EMAIL_SUBJECT_TO_VERIFY_EMAIL_ADDRESS',
+        value: 'Welcome to Construction Assistant - verify your email address',
+        description: 'Email subject to verify email address'
       }
     ];
 
