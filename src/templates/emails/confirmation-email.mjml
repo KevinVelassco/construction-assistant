@@ -1,0 +1,50 @@
+<mjml>
+  <mj-head>
+      <mj-attributes>
+        <mj-all font-family="Helvetica, Arial, sans-serif" font-size="15px" color="#ffffff"></mj-all>
+      </mj-attributes>
+  </mj-head>
+  <mj-body width background-color="#003d6c">
+    <mj-section>
+      <mj-column>
+        <mj-image align="center" width="200px" src="https://res.cloudinary.com/dlsd6uch5/image/upload/v1632012409/logo_construction_assistant_q5b4m8.png"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text font-weight="800" align="center" font-size="18px">Verify your email address</mj-text>
+        <mj-spacer height="25px" />
+        <mj-text align="center">
+          <p>{{name}},</p>
+          <p>Let's try again. Just click the button below to validate your email address.
+        </mj-text>
+
+        <mj-button background-color="#005fa9" href="{{link}}">
+          Sign in to Validate your Email Address
+        </mj-button>
+
+        <mj-text font-weight="800">
+          <p>Note:</p>
+          <p>Validate your email address within 24 hours to keep your account enabled.</p>
+        </mj-text>
+
+        <mj-text>If you encounter any problem, please contact the support team.</mj-text>
+
+        <mj-spacer height="30px" />
+        <mj-text font-weight="800">Account Details</mj-text>
+        <mj-text padding-left="40px">
+          <p><b>Name:</b> {{name}}</p>
+          <p><b>Email:</b> {{email}}</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#003964" padding-top="5px" padding-bottom="5px">
+      <mj-column>
+        <mj-text align="center" >
+          <p>Thanks,</p>
+          <p>The Construction Assistant team.</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
