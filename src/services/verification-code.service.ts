@@ -4,6 +4,7 @@ import { VerificationCode } from '../entities/verification-code.entity';
 import { generateUuid } from '../utils/generateUuid';
 import { CreateVerificationCodeInput } from '../dto/verification-codes/create-verification-code-input.dto';
 import { ValidateVerificationCodeInput } from '../dto/verification-codes/validate-verification-code-input.dto';
+import { FindOneVerificationCodeInput } from '../dto/verification-codes/find-one-verification-code-input.dto';
 
 export class VerificationCodeService {
   static async create(
@@ -60,5 +61,29 @@ export class VerificationCodeService {
     }
 
     return existing;
+  }
+
+  static async delete(
+    findOneVerificationCodeInput: FindOneVerificationCodeInput
+  ) {
+    const { uid } = findOneVerificationCodeInput;
+
+    const verificationCodeRepository = getRepository(VerificationCode);
+
+    const existing = await verificationCodeRepository.findOne({
+      where: { uid }
+    });
+
+    if (!existing)
+      throw new HttpException(
+        404,
+        `can't get the verification code with uid ${uid}`
+      );
+
+    const clone = { ...existing };
+
+    await verificationCodeRepository.softRemove(existing);
+
+    return clone;
   }
 }
