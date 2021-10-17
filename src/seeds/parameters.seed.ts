@@ -20,6 +20,11 @@ export const ParameterFactory = {
         name: 'EMAIL_SUBJECT_TO_VERIFY_EMAIL_ADDRESS',
         value: 'Welcome to Construction Assistant - verify your email address',
         description: 'Email subject to verify email address'
+      },
+      {
+        name: 'EMAIL_CHANGE_NOTIFICATION_EMAIL_SUBJECT',
+        value: 'Construction Assistant - Email address changed',
+        description: 'Email change notification email subject'
       }
     ];
 
