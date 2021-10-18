@@ -13,6 +13,8 @@ import { SendAuthPasswordUpdateEmailInput } from '../dto/auths/send-auth-passwor
 import { ResetAuthPasswordInput } from '../dto/auths/reset-auth-password-input.dto';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationCodeType } from '../entities/verification-code.entity';
+import { SendResetAuthPasswordEmailInput } from '../dto/auths/send-reset-auth-password-email-input.dto';
+import { addTimeToDate, TimeType } from '../utils/addTimeToDate';
 
 export class AuthService {
   static async login(loginAuthInput: LoginAuthInput): Promise<Object> {
@@ -212,5 +214,54 @@ export class AuthService {
     this.sendPasswordUpdateEmail({ email, authUid }).catch(console.error);
 
     return { success: true, message: 'password changed successfully.' };
+  }
+
+  static async sendResetPasswordEmail(
+    sendResetAuthPasswordEmailInput: SendResetAuthPasswordEmailInput
+  ): Promise<Object> {
+    const { email } = sendResetAuthPasswordEmailInput;
+
+    const existing = await UserService.getUserByEmail({ email });
+
+    if (!existing) {
+      throw new HttpException(404, `can't get the user with email ${email}`);
+    }
+
+    const currentDate = new Date();
+
+    const verificationCode = await VerificationCodeService.create({
+      type: VerificationCodeType.RESET_PASSWORD,
+      expirationDate: addTimeToDate(currentDate, 1, TimeType.Days),
+      user: existing
+    });
+
+    const html = TemplateService.generateHtmlByTemplate(
+      'password-reset-notification',
+      {
+        email,
+        name: existing.name,
+        link: `${process.env.SELF_WEB_URL}change-password?code=${verificationCode.code}`
+      }
+    );
+
+    const from = <string>process.env.MAILGUN_EMAIL_FROM;
+
+    const parameterName = 'PASSWORD_RESET_EMAIL_SUBJECT';
+
+    const subject = await ParameterService.getParameterValue({
+      name: parameterName
+    });
+
+    await MailgunService.sendEmail({
+      from,
+      to: email,
+      subject: <string>subject,
+      html
+    });
+
+    return {
+      success: true,
+      message: 'password reset instructions email sent.'
+    };
   }
 }
