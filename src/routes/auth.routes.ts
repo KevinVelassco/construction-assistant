@@ -1,5 +1,6 @@
 import { DtoType } from '../config/dto-type.config';
 import { AuthController } from '../controllers/auth.controller';
+import { ChangeAuthEmailInput } from '../dto/auths/change-auth-email-Input.dto';
 import { ChangeAuthPasswordInput } from '../dto/auths/change-auth-password-input.dto';
 import { LoginAuthInput } from '../dto/auths/login-auth-input.dto';
 import { RefreshAuthTokenInput } from '../dto/auths/refresh-auth-token-input.dto';
@@ -41,5 +42,11 @@ export const auth = [
     route: '/auth/send-reset-password-email',
     dto: dtoValidation(SendResetAuthPasswordEmailInput, DtoType.Body),
     action: AuthController.sendResetPasswordEmail
+  },
+  {
+    method: 'put',
+    route: '/auth/change-email',
+    dto: dtoValidation(ChangeAuthEmailInput, DtoType.Body),
+    action: AuthController.changeEmail
   }
 ];
