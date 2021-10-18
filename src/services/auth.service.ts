@@ -15,6 +15,7 @@ import { VerificationCodeService } from './verification-code.service';
 import { VerificationCodeType } from '../entities/verification-code.entity';
 import { SendResetAuthPasswordEmailInput } from '../dto/auths/send-reset-auth-password-email-input.dto';
 import { addTimeToDate, TimeType } from '../utils/addTimeToDate';
+import { SendAuthEmailChangeNotificationInput } from '../dto/auths/send-auth-email-change-notification-input.dto';
 
 export class AuthService {
   static async login(loginAuthInput: LoginAuthInput): Promise<Object> {
@@ -262,6 +263,48 @@ export class AuthService {
     return {
       success: true,
       message: 'password reset instructions email sent.'
+    };
+  }
+
+  static async sendEmailChangeNotification(
+    sendAuthEmailChangeNotificationInput: SendAuthEmailChangeNotificationInput
+  ): Promise<Object> {
+    const { authUid, oldEmail } = sendAuthEmailChangeNotificationInput;
+
+    const existing = await UserService.getUserByAuthUid({ authUid });
+
+    if (!existing) {
+      throw new HttpException(
+        404,
+        `can't get the user with authUid ${authUid}.`
+      );
+    }
+
+    const html = TemplateService.generateHtmlByTemplate(
+      'email-address-change-notification',
+      {
+        name: existing.name
+      }
+    );
+
+    const from = <string>process.env.MAILGUN_EMAIL_FROM;
+
+    const parameterName = 'EMAIL_CHANGE_NOTIFICATION_EMAIL_SUBJECT';
+
+    const subject = await ParameterService.getParameterValue({
+      name: parameterName
+    });
+
+    await MailgunService.sendEmail({
+      from,
+      to: oldEmail,
+      subject: <string>subject,
+      html
+    });
+
+    return {
+      success: true,
+      message: 'email for email change notification sent.'
     };
   }
 }
