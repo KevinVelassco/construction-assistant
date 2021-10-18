@@ -25,4 +25,8 @@ export class AuthController {
   static async changeEmail(req: Request): Promise<Object> {
     return AuthService.changeEmail(req.body);
   }
+
+  static async confirmEmail(req: Request): Promise<Object> {
+    return AuthService.confirmEmail(req.body);
+  }
 }
