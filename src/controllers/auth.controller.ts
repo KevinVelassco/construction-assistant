@@ -17,4 +17,8 @@ export class AuthController {
   static async resetPassword(req: Request): Promise<Object> {
     return AuthService.resetPassword(req.body);
   }
+
+  static async sendResetPasswordEmail(req: Request): Promise<Object> {
+    return AuthService.sendResetPasswordEmail(req.body);
+  }
 }
