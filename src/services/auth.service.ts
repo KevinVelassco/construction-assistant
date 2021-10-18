@@ -15,6 +15,7 @@ import { VerificationCodeService } from './verification-code.service';
 import { VerificationCodeType } from '../entities/verification-code.entity';
 import { SendResetAuthPasswordEmailInput } from '../dto/auths/send-reset-auth-password-email-input.dto';
 import { addTimeToDate, TimeType } from '../utils/addTimeToDate';
+import { SendAuthConfirmationEmailInput } from '../dto/auths/send-auth-confirmation-email-input.dto';
 import { SendAuthEmailChangeNotificationInput } from '../dto/auths/send-auth-email-change-notification-input.dto';
 
 export class AuthService {
@@ -305,6 +306,57 @@ export class AuthService {
     return {
       success: true,
       message: 'email for email change notification sent.'
+    };
+  }
+
+  static async sendConfirmationEmail(
+    sendAuthConfirmationEmailInput: SendAuthConfirmationEmailInput
+  ): Promise<Object> {
+    const { authUid } = sendAuthConfirmationEmailInput;
+
+    const existing = await UserService.getUserByAuthUid({ authUid });
+
+    if (!existing) {
+      throw new HttpException(
+        404,
+        `can't get the user with authUid ${authUid}.`
+      );
+    }
+
+    const { email } = existing;
+
+    const currentDate = new Date();
+
+    const verificationCode = await VerificationCodeService.create({
+      type: VerificationCodeType.CONFIRM_EMAIL,
+      expirationDate: addTimeToDate(currentDate, 1, TimeType.Days),
+      user: existing
+    });
+
+    const html = TemplateService.generateHtmlByTemplate('confirmation-email', {
+      email,
+      name: existing.name,
+      link: `${process.env.SELF_WEB_URL}confirm-email?code=${verificationCode.code}`
+    });
+
+    const from = <string>process.env.MAILGUN_EMAIL_FROM;
+
+    const parameterName = 'EMAIL_SUBJECT_TO_VERIFY_EMAIL_ADDRESS';
+
+    const subject = await ParameterService.getParameterValue({
+      name: parameterName
+    });
+
+    await MailgunService.sendEmail({
+      from,
+      to: email,
+      subject: <string>subject,
+      html
+    });
+
+    return {
+      success: true,
+      message: 'email to confirm email sent.'
     };
   }
 }
