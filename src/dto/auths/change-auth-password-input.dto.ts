@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class ChangeAuthPasswordInput {
   @IsNotEmpty()
@@ -11,6 +11,12 @@ export class ChangeAuthPasswordInput {
   @IsString()
   @Expose()
   readonly newPassword: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  @Expose()
+  readonly email: string;
 
   @IsNotEmpty()
   @IsString()
