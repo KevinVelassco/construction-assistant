@@ -10,6 +10,9 @@ import { TemplateService } from '../templates/template.service';
 import { MailgunService } from '../plugins/mailgun/mailgun.service';
 import { ParameterService } from './parameter.service';
 import { SendAuthPasswordUpdateEmailInput } from '../dto/auths/send-auth-password-update-email-input.dto';
+import { ResetAuthPasswordInput } from '../dto/auths/reset-auth-password-input.dto';
+import { VerificationCodeService } from './verification-code.service';
+import { VerificationCodeType } from '../entities/verification-code.entity';
 
 export class AuthService {
   static async login(loginAuthInput: LoginAuthInput): Promise<Object> {
@@ -171,5 +174,43 @@ export class AuthService {
       subject: <string>subject,
       html
     });
+  }
+
+  static async resetPassword(
+    resetAuthPasswordInput: ResetAuthPasswordInput
+  ): Promise<Object> {
+    const { code } = resetAuthPasswordInput;
+
+    const verificationCode = await VerificationCodeService.validate({
+      code,
+      type: VerificationCodeType.RESET_PASSWORD
+    });
+
+    const { password, confirmedPassword } = resetAuthPasswordInput;
+
+    if (password !== confirmedPassword) {
+      throw new HttpException(400, 'the passwords do not match.');
+    }
+
+    const { user } = verificationCode;
+
+    const userRepository = getRepository(User);
+
+    const merged = userRepository.merge(user, { password });
+
+    try {
+      merged.hashPassword();
+      await userRepository.save(merged);
+    } catch (e) {
+      throw new HttpException(409, 'something goes wrong!');
+    }
+
+    await VerificationCodeService.delete({ uid: verificationCode.uid });
+
+    const { email, authUid } = user;
+
+    this.sendPasswordUpdateEmail({ email, authUid }).catch(console.error);
+
+    return { success: true, message: 'password changed successfully.' };
   }
 }
