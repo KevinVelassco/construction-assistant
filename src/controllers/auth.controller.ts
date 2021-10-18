@@ -13,4 +13,8 @@ export class AuthController {
   static async changePassword(req: Request): Promise<Object> {
     return AuthService.changePassword(req.body);
   }
+
+  static async resetPassword(req: Request): Promise<Object> {
+    return AuthService.resetPassword(req.body);
+  }
 }
