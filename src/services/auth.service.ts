@@ -15,6 +15,7 @@ import { VerificationCodeService } from './verification-code.service';
 import { VerificationCodeType } from '../entities/verification-code.entity';
 import { SendResetAuthPasswordEmailInput } from '../dto/auths/send-reset-auth-password-email-input.dto';
 import { addTimeToDate, TimeType } from '../utils/addTimeToDate';
+import { ChangeAuthEmailInput } from '../dto/auths/change-auth-email-Input.dto';
 import { SendAuthConfirmationEmailInput } from '../dto/auths/send-auth-confirmation-email-input.dto';
 import { SendAuthEmailChangeNotificationInput } from '../dto/auths/send-auth-email-change-notification-input.dto';
 
@@ -265,6 +266,64 @@ export class AuthService {
       success: true,
       message: 'password reset instructions email sent.'
     };
+  }
+
+  static async changeEmail(
+    changeAuthEmailInput: ChangeAuthEmailInput
+  ): Promise<Object> {
+    const { authUid } = changeAuthEmailInput;
+
+    const existing = await UserService.getUserByAuthUid({ authUid });
+
+    if (!existing) {
+      throw new HttpException(
+        404,
+        `can't get the user with authUid ${authUid}.`
+      );
+    }
+
+    const { email } = changeAuthEmailInput;
+
+    if (existing.email === email) {
+      throw new HttpException(
+        400,
+        'the new email must be different from the old one.'
+      );
+    }
+
+    const existingUserWithSameEmail = await UserService.getUserByEmail({
+      email
+    });
+
+    if (existingUserWithSameEmail) {
+      throw new HttpException(409, `the email ${email} it's already used.`);
+    }
+
+    const userRepository = getRepository(User);
+
+    const oldEmail = existing.email;
+
+    const merged = userRepository.merge(existing, {
+      email,
+      emailVerified: false
+    });
+
+    try {
+      await userRepository.save(merged);
+    } catch (e) {
+      throw new HttpException(409, 'something goes wrong!');
+    }
+
+    this.sendEmailChangeNotification({
+      oldEmail,
+      authUid
+    }).catch(console.error);
+
+    this.sendConfirmationEmail({
+      authUid
+    }).catch(console.error);
+
+    return { success: true, message: 'email changed successfully.' };
   }
 
   static async sendEmailChangeNotification(
