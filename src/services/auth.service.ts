@@ -17,6 +17,7 @@ import { SendResetAuthPasswordEmailInput } from '../dto/auths/send-reset-auth-pa
 import { addTimeToDate, TimeType } from '../utils/addTimeToDate';
 import { ChangeAuthEmailInput } from '../dto/auths/change-auth-email-Input.dto';
 import { SendAuthConfirmationEmailInput } from '../dto/auths/send-auth-confirmation-email-input.dto';
+import { ConfirmUserAuthEmailInput } from '../dto/auths/confirm-user-auth-email-input.dto';
 import { SendAuthEmailChangeNotificationInput } from '../dto/auths/send-auth-email-change-notification-input.dto';
 
 export class AuthService {
@@ -417,5 +418,32 @@ export class AuthService {
       success: true,
       message: 'email to confirm email sent.'
     };
+  }
+
+  static async confirmEmail(
+    confirmUserAuthEmailInput: ConfirmUserAuthEmailInput
+  ): Promise<Object> {
+    const { code } = confirmUserAuthEmailInput;
+
+    const verificationCode = await VerificationCodeService.validate({
+      code,
+      type: VerificationCodeType.CONFIRM_EMAIL
+    });
+
+    const { user } = verificationCode;
+
+    const userRepository = getRepository(User);
+
+    const merged = userRepository.merge(user, { emailVerified: true });
+
+    try {
+      await userRepository.save(merged);
+    } catch (e) {
+      throw new HttpException(409, 'something goes wrong!');
+    }
+
+    await VerificationCodeService.delete({ uid: verificationCode.uid });
+
+    return { success: true, message: 'email verified successfully.' };
   }
 }
