@@ -82,14 +82,17 @@ export class AuthService {
   static async changePassword(
     changeAuthPasswordInput: ChangeAuthPasswordInput
   ): Promise<Object> {
-    const { authUid } = changeAuthPasswordInput;
+    const { authUid, email } = changeAuthPasswordInput;
 
-    const existing = await UserService.getUserByAuthUid({ authUid });
+    const existing = await UserService.getUserByAuthUidAndEmail({
+      authUid,
+      email
+    });
 
     if (!existing)
       throw new HttpException(
         404,
-        `can't get the user with authUid ${authUid}`
+        `can't get the user with email ${email} for the authUid ${authUid}`
       );
 
     const { oldPassword } = changeAuthPasswordInput;
@@ -119,10 +122,13 @@ export class AuthService {
       merged.hashPassword();
 
       await userRepository.save(merged);
-      return { success: true, message: 'password changed successfully.' };
     } catch (e) {
-      throw new HttpException(409, e.message);
+      throw new HttpException(409, 'something goes wrong!');
     }
+
+    this.sendPasswordUpdateEmail({ email, authUid }).catch(console.error);
+
+    return { success: true, message: 'password changed successfully.' };
   }
 
   private static async sendPasswordUpdateEmail(
