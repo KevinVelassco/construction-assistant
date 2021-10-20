@@ -12,23 +12,23 @@
     </mj-section>
     <mj-section>
       <mj-column>
-        <mj-text font-weight="800" align="center" font-size="18px">Verify your email address</mj-text>
+        <mj-text font-weight="800" align="center" font-size="18px">Welcome to Construction Assistant</mj-text>
         <mj-spacer height="25px" />
-        <mj-text align="center">
+        <mj-text align="center" font-weight="700">
           <p>{{name}},</p>
-          <p>Let's try again. Just click the button below to validate your email address.</p>
+          <p>Congratulations! You're almost set to start using Construction Assistant.</p>
+          <p>Just click the button below to validate your email address.</p>
         </mj-text>
 
         <mj-button background-color="#005fa9" href="{{link}}">
           Sign in to Validate your Email Address
         </mj-button>
 
-        <mj-text font-weight="800">
-          <p>Note:</p>
-          <p>Validate your email address within 24 hours to keep your account enabled.</p>
+        <mj-text align="center">
+          <p>Note: You must perform this validation within the next 24 hours to keep your new account enabled.</p>
         </mj-text>
 
-        <mj-text>If you encounter any problem, please contact the support team.</mj-text>
+        <mj-text align="center">If you encounter any problem, please contact the support team.</mj-text>
 
         <mj-spacer height="30px" />
         <mj-text font-weight="800">Account Details</mj-text>
