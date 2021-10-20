@@ -6,8 +6,9 @@ import { FindAllUsersInput } from '../dto/users/find-all-users-input.dto';
 import { GetUserByAuthUidInput } from '../dto/users/get-user-by-auth-uid-input.dto';
 import { UpdateUserInput } from '../dto/users/update-user-input.dto';
 import { dtoValidation } from '../middlewares/dto-validation';
+import { Route } from './index.routes';
 
-export const user = [
+export const user: Array<Route> = [
   {
     method: 'get',
     route: '/users',
