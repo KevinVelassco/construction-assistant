@@ -372,7 +372,7 @@ export class AuthService {
   static async sendConfirmationEmail(
     sendAuthConfirmationEmailInput: SendAuthConfirmationEmailInput
   ): Promise<Object> {
-    const { authUid } = sendAuthConfirmationEmailInput;
+    const { authUid, newAccount = false } = sendAuthConfirmationEmailInput;
 
     const existing = await UserService.getUserByAuthUid({ authUid });
 
@@ -393,7 +393,9 @@ export class AuthService {
       user: existing
     });
 
-    const html = TemplateService.generateHtmlByTemplate('confirmation-email', {
+    const template = newAccount ? 'welcome-notification' : 'confirmation-email';
+
+    const html = TemplateService.generateHtmlByTemplate(template, {
       email,
       name: existing.name,
       link: `${process.env.SELF_WEB_URL}confirm-email?code=${verificationCode.code}`
@@ -401,7 +403,9 @@ export class AuthService {
 
     const from = <string>process.env.MAILGUN_EMAIL_FROM;
 
-    const parameterName = 'EMAIL_SUBJECT_TO_VERIFY_EMAIL_ADDRESS';
+    const parameterName = newAccount
+      ? 'WELCOME_EMAIL_SUBJECT'
+      : 'EMAIL_SUBJECT_TO_VERIFY_EMAIL_ADDRESS';
 
     const subject = await ParameterService.getParameterValue({
       name: parameterName
