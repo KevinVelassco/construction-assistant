@@ -6,22 +6,22 @@ import { auth } from './auth.routes';
 
 const router = Router();
 
-interface RouteItem {
-  unauthenticatedAvailable?: boolean;
+export interface Route {
+  isPublic?: boolean;
   method: string;
   route: string;
   dto: Function | Array<Function>;
   action: Function;
 }
 
-const routes: Array<RouteItem> = [...auth, ...user];
+const routes: Array<Route> = [...auth, ...user];
 
 const globalMiddlewares = [checkJwt];
 
-routes.forEach(({ unauthenticatedAvailable, method, route, dto, action }) => {
+routes.forEach(({ isPublic, method, route, dto, action }) => {
   let middlewares: Function[];
 
-  if (unauthenticatedAvailable) {
+  if (isPublic) {
     middlewares = dto instanceof Function ? [dto] : [...dto];
   } else {
     middlewares =
