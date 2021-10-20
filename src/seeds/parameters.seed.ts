@@ -25,6 +25,13 @@ export const ParameterFactory = {
         name: 'EMAIL_CHANGE_NOTIFICATION_EMAIL_SUBJECT',
         value: 'Construction Assistant - Email address changed',
         description: 'Email change notification email subject'
+      },
+      {
+        name: 'WELCOME_EMAIL_SUBJECT',
+        value:
+          // eslint-disable-next-line quotes
+          "Welcome to Construction Assistant - Important: Let's complete your account setup",
+        description: 'Welcome email subject'
       }
     ];
 
