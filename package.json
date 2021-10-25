@@ -31,7 +31,8 @@
     "nanoid": "^3.1.23",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.34"
+    "typeorm": "^0.2.34",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
