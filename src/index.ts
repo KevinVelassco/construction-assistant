@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import routes from './routes/index.routes';
 import { errorHandling } from './middlewares/error-handling';
 import { notfound404 } from './middlewares/not-found-404';
+import { logger } from './utils/logger';
 
 const enviroment = process.env.NODE_ENV || 'local';
 const envPath = path.resolve(__dirname, `../.env.${enviroment}`);
@@ -45,6 +46,6 @@ createConnection({
     app.use(errorHandling);
 
     // start express server
-    app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+    app.listen(PORT, () => logger.info(`server running on port ${PORT}`));
   })
-  .catch(console.error);
+  .catch(logger.error);

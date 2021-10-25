@@ -1,5 +1,6 @@
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
+import { logger } from '../../utils/logger';
 import { SendEmailInput } from './dto/send-email-Input.dto';
 
 export class MailgunService {
@@ -27,9 +28,9 @@ export class MailgunService {
         html: sendEmailInput.html
       });
 
-      console.log(`${JSON.stringify(msg)}`);
+      logger.info(`${JSON.stringify(msg)}`);
     } catch (e) {
-      console.log(`sendEmail: ${JSON.stringify(e)}`);
+      logger.error(`sendEmail: ${JSON.stringify(e)}`);
     }
   }
 }
