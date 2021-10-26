@@ -27,7 +27,7 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     'comma-dangle': ['error', 'never'],
-    // 'no-console': ['error', { allow: ['warn', 'error'] }]
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'import/order': [
       'error',
       {
